@@ -7,7 +7,7 @@ dep_lager  = git https://github.com/basho/lager master
 dep_eredis = git https://github.com/wooga/eredis master
 
 BUILD_DEPS = emqttd
-dep_emqttd = git https://github.com/emqtt/emqttd master
+dep_emqttd = git https://github.com/wuhanqing/emqttd develop
 
 TEST_DEPS = cuttlefish
 dep_cuttlefish = git https://github.com/emqtt/cuttlefish
@@ -20,3 +20,4 @@ app:: rebar.config
 
 app.config::
 	cuttlefish -l info -e etc/ -c etc/emq_plugin_hook.conf -i priv/emq_plugin_hook.schema -d data
+
