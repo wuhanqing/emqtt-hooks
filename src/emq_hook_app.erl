@@ -5,7 +5,8 @@
 -export([stop/1]).
 
 start(_Type, _Args) ->
-	emq_hook_sup:start_link().
-
+	{ok, Sup} = emq_hook_sup:start_link(),
+  emq_hook:load(application:get_all_env()),
+  {ok, Sup}.
 stop(_State) ->
-	ok.
+	emq_hook:unload().
