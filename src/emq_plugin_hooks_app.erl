@@ -23,12 +23,10 @@
 
 start(_StartType, _StartArgs) ->
     {ok, Sup} = emq_plugin_template_sup:start_link(),
-    ok = emqttd_access_control:register_mod(auth, emq_auth_demo, []),
-    ok = emqttd_access_control:register_mod(acl, emq_acl_demo, []),
+    ok = emqttd_access_control:register_mod(acl, emq_hooks_acl, []),
     emq_plugin_template:load(application:get_all_env()),
     {ok, Sup}.
 
 stop(_State) ->
-    ok = emqttd_access_control:unregister_mod(auth, emq_auth_demo),
-    ok = emqttd_access_control:unregister_mod(acl, emq_acl_demo),
+    ok = emqttd_access_control:unregister_mod(acl, emq_hooks_acl),
     emq_plugin_template:unload().

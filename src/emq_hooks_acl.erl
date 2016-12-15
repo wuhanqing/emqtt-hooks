@@ -14,20 +14,22 @@
 %% limitations under the License.
 %%--------------------------------------------------------------------
 
--module(emq_auth_demo).
-
--behaviour(emqttd_auth_mod).
+-module(emq_hooks_acl).
 
 -include_lib("emqttd/include/emqttd.hrl").
 
--export([init/1, check/3, description/0]).
+%% ACL callbacks
+-export([init/1, check_acl/2, reload_acl/1, description/0]).
 
-init(Opts) -> {ok, Opts}.
+init(Opts) ->
+    {ok, Opts}.
 
-check(#mqtt_client{client_id = ClientId, username = Username}, Password, _Opts) ->
-    io:format("Auth Demo: clientId=~p, username=~p, password=~p~n",
-              [ClientId, Username, Password]),
+check_acl({Client, PubSub, Topic}, _Opts) ->
+    io:format("ACL Demo: ~p ~p ~p~n", [Client, PubSub, Topic]),
+    allow.
+
+reload_acl(_Opts) ->
     ok.
 
-description() -> "Auth Demo Module".
-
+description() -> "ACL Demo Module".
+ 
