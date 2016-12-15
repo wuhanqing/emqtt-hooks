@@ -45,7 +45,6 @@ load(Env) ->
     emqttd:hook('message.acked', fun ?MODULE:on_message_acked/4, [Env]).
 
 on_client_connected(ConnAck, Client = #mqtt_client{client_id = ClientId}, _Env) ->
-    lager:info("lalalalalalalalallalalalalalalallalala"),
     io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]),
     {ok, Client}.
 
@@ -80,7 +79,6 @@ on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env)
     {ok, Message};
 
 on_message_publish(Message, _Env) ->
-    lager:info("msg ~s~n", Message),
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
     {ok, Message}.
 

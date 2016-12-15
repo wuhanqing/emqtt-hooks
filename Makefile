@@ -2,8 +2,7 @@ PROJECT = emq_hook
 PROJECT_DESCRIPTION = EMQ Plugin Template
 PROJECT_VERSION = 2.0.1
 
-DEPS = lager eredis
-dep_lager  = git https://github.com/basho/lager master
+DEPS = eredis
 dep_eredis = git https://github.com/wooga/eredis master
 
 BUILD_DEPS = emqttd
