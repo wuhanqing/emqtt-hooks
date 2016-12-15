@@ -32,7 +32,6 @@
 
 %% Called when the plugin application start
 load(Env) ->
-    io:format("pulgin load!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"),
     emqttd:hook('client.connected', fun ?MODULE:on_client_connected/3, [Env]),
     emqttd:hook('client.disconnected', fun ?MODULE:on_client_disconnected/3, [Env]),
     emqttd:hook('client.subscribe', fun ?MODULE:on_client_subscribe/4, [Env]),
@@ -46,6 +45,7 @@ load(Env) ->
     emqttd:hook('message.acked', fun ?MODULE:on_message_acked/4, [Env]).
 
 on_client_connected(ConnAck, Client = #mqtt_client{client_id = ClientId}, _Env) ->
+    lager:info("lalalalalalalalallalalalalalalallalala"),
     io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]),
     {ok, Client}.
 
@@ -62,7 +62,7 @@ on_client_unsubscribe(ClientId, Username, TopicTable, _Env) ->
     {ok, TopicTable}.
 
 on_session_created(ClientId, Username, _Env) ->
-    io:format("session(~s/~s) created.", [ClientId, Username]).
+    io:format("session(~s/~s) created.", [ClientId, Us.ername]).
 
 on_session_subscribed(ClientId, Username, {Topic, Opts}, _Env) ->
     io:format("session(~s/~s) subscribed: ~p~n", [Username, ClientId, {Topic, Opts}]),
@@ -77,6 +77,7 @@ on_session_terminated(ClientId, Username, Reason, _Env) ->
 
 %% transform message and return
 on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
+    lager:info("msg ~s~n", Message),
     {ok, Message};
 
 on_message_publish(Message, _Env) ->
