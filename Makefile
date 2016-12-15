@@ -2,8 +2,9 @@ PROJECT = emq_plugin_hook
 PROJECT_DESCRIPTION = EMQ Plugin Template
 PROJECT_VERSION = 2.0.1
 
-BUILD_DEPS = emqttd
+BUILD_DEPS = emqttd lager
 dep_emqttd = git https://github.com/emqtt/emqttd master
+dep_lager  = git https://github.com/basho/lager master
 
 TEST_DEPS = cuttlefish
 dep_cuttlefish = git https://github.com/emqtt/cuttlefish
