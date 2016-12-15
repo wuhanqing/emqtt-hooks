@@ -78,7 +78,7 @@ on_session_terminated(ClientId, Username, Reason, _Env) ->
 %% transform message and return
 on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     lager:info("msg ~s~n", Message),
-    {ok, Message};
+    {ok, Message}.
 
 on_message_publish(Message, _Env) ->
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
