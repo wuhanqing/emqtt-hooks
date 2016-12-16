@@ -1,7 +1,6 @@
 -module(emq_hook_app).
 -behaviour(application).
 
-
 -export([start/2]).
 -export([stop/1]).
 
