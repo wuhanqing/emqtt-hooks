@@ -1,7 +1,6 @@
 -module(emq_hook_app).
 -behaviour(application).
 
--include("emq_hook.hrl").
 
 -export([start/2]).
 -export([stop/1]).
