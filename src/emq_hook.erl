@@ -46,6 +46,7 @@ load(Env) ->
 
 on_client_connected(ConnAck, Client = #mqtt_client{client_id = ClientId}, _Env) ->
     io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]),
+    emq_redis_cli:set(io:format("client: ~s~n", [ClientId]), "online"),
     {ok, Client}.
 
 on_client_disconnected(Reason, _Client = #mqtt_client{client_id = ClientId}, _Env) ->
@@ -76,6 +77,7 @@ on_session_terminated(ClientId, Username, Reason, _Env) ->
 
 %% transform message and return
 on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
+    io:format("transform Message ~s~n", Message),
     {ok, Message};
 
 on_message_publish(Message, _Env) ->
