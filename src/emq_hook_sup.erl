@@ -13,4 +13,4 @@ init([]) ->
   {ok, Server} = application:get_env(?APP, server),
   RedisPoolSpec = ecpool:pool_spec(?APP, ?APP, emq_redis_cli, Server),
   Procs = [RedisPoolSpec],
-	{ok, {{one_for_one, 1, 5}, Procs}}.
+	{ok, {{one_for_one, 10, 100}, Procs}}.
