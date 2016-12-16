@@ -7,10 +7,10 @@
 -export([init/1]).
 
 start_link() ->
-	supervisor:start_link({local, ?MODULE}, ?MODULE, []).
+    supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->
-  {ok, Server} = application:get_env(?APP, server),
-  RedisPoolSpec = ecpool:pool_spec(?APP, ?APP, emq_redis_cli, Server),
-  Procs = [RedisPoolSpec],
-	{ok, {{one_for_one, 10, 100}, Procs}}.
+    {ok, Server} = application:get_env(?APP, server),
+    RedisPoolSpec = ecpool:pool_spec(?APP, ?APP, emq_redis_cli, Server),
+    Procs = [RedisPoolSpec],
+    {ok, {{one_for_one, 10, 100}, Procs}}.
