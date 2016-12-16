@@ -8,7 +8,7 @@ include_lib("emqttd/include/emqttd.hrl").
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
--export([connect/1, q/2]).
+-export([connect/1, set/2, get/1]).
 
 %%--------------------------------------------------------------------
 %% Redis Connect/Query
@@ -27,5 +27,5 @@ set(Key, Value) ->
     ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["SET", Key, Value]) end).
 
 -spec(get(string()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
-set(Key) ->
+get(Key) ->
     ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["GET", Key]) end).
