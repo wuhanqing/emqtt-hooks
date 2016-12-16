@@ -2,9 +2,9 @@
 
 -behaviour(ecpool_worker).
 
-include("emq_hook.hrl").
+-include("emq_hook.hrl").
 
-include_lib("emqttd/include/emqttd.hrl").
+-include_lib("emqttd/include/emqttd.hrl").
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
