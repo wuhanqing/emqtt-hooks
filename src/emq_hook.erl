@@ -75,6 +75,9 @@ on_session_unsubscribed(ClientId, Username, {Topic, Opts}, _Env) ->
 on_session_terminated(ClientId, Username, Reason, _Env) ->
     io:format("session(~s/~s) terminated: ~p.", [ClientId, Username, Reason]).
 
+on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
+    {ok, Message};
+
 on_message_publish(Message, _Env) ->
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
     {ok, Message}.
