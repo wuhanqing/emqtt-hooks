@@ -46,6 +46,7 @@ load(Env) ->
 
 on_client_connected(ConnAck, Client = #mqtt_client{client_id = ClientId}, _Env) ->
     io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]),
+    emq_redis_cli:set(io:format("client: ~s~n", [ClientId]), "online"),
     {ok, Client}.
 
 on_client_disconnected(Reason, _Client = #mqtt_client{client_id = ClientId}, _Env) ->
