@@ -20,4 +20,3 @@ app:: rebar.config
 
 app.config::
 	cuttlefish -l info -e etc/ -c etc/emq_hook.conf -i priv/emq_hook.schema -d data
-e
