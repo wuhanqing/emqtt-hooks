@@ -4,7 +4,7 @@ PROJECT_VERSION = 2.0.1
 
 DEPS = eredis brod
 dep_eredis = git https://github.com/wooga/eredis master
-dep_brod = git https://github.com/klarna/brod.git master
+dep_brod = git https://github.com/klarna/brod master
 
 BUILD_DEPS = emqttd
 dep_emqttd = git https://github.com/wuhanqing/emqttd develop
