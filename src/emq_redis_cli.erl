@@ -29,3 +29,7 @@ set(Key, Value) ->
 -spec(get(string()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
 get(Key) ->
     ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["GET", Key]) end).
+
+-spec(hset(string()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
+get(Key) ->
+    ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["HSET", Key]) end).

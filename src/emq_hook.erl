@@ -46,7 +46,7 @@ load(Env) ->
 
 on_client_connected(ConnAck, Client = #mqtt_client{client_id = ClientId}, _Env) ->
     io:format("client ~s connected, connack: ~w~n", [ClientId, ConnAck]),
-    emq_redis_cli:set(io:format("client: ~s~n", [ClientId]), "online"),
+    emq_redis_cli:set(string:concat("client_", [ClientId]), "online"),
     {ok, Client}.
 
 on_client_disconnected(Reason, _Client = #mqtt_client{client_id = ClientId}, _Env) ->
@@ -56,7 +56,7 @@ on_client_disconnected(Reason, _Client = #mqtt_client{client_id = ClientId}, _En
 on_client_subscribe(ClientId, Username, TopicTable, _Env) ->
     io:format("client(~s/~s) will subscribe: ~p~n", [Username, ClientId, TopicTable]),
     {ok, TopicTable}.
-    
+
 on_client_unsubscribe(ClientId, Username, TopicTable, _Env) ->
     io:format("client(~s/~s) unsubscribe ~p~n", [ClientId, Username, TopicTable]),
     {ok, TopicTable}.
@@ -78,8 +78,10 @@ on_session_terminated(ClientId, Username, Reason, _Env) ->
 on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     {ok, Message};
 
-on_message_publish(Message, _Env) ->
+on_message_publish(Message = #mqtt_message{from = From, payload = Payload, timestamp = Timestamp}, _Env) ->
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
+    io:format("publish from ~s, Payload is ~s, Timestamp is ~s~n", From, Payload, Timestamp),
+    %emq_kafka_cli.produce(brod_client_1, <<"im-server">>, key, Message),
     {ok, Message}.
 
 on_message_delivered(ClientId, Username, Message, _Env) ->

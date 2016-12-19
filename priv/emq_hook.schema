@@ -1,27 +1,27 @@
 %%-*- mode: erlang -*-
 %% emq_redis config mapping
-{mapping, "redis.server", "emq_hook.server", [
+{mapping, "redis.server", "emq_hook.redis", [
   {default, {"127.0.0.1", 6379}},
   {datatype, [integer, ip, string]}
 ]}.
 
-{mapping, "redis.pool", "emq_hook.server", [
+{mapping, "redis.pool", "emq_hook.redis", [
   {default, 8},
   {datatype, integer}
 ]}.
 
-{mapping, "redis.database", "emq_hook.server", [
+{mapping, "redis.database", "emq_hook.redis", [
   {default, 0},
   {datatype, integer}
 ]}.
 
-{mapping, "redis.password", "emq_hook.server", [
+{mapping, "redis.password", "emq_hook.redis", [
   {default, ""},
   {datatype, string},
   hidden
 ]}.
 
-{translation, "emq_hook.server", fun(Conf) ->
+{translation, "emq_hook.redis", fun(Conf) ->
   {RHost, RPort} =
   case cuttlefish:conf_get("redis.server", Conf) of
     {Ip, Port} -> {Ip, Port};
