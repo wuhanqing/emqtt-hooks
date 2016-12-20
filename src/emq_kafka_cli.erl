@@ -25,5 +25,5 @@ monitor(Pid) ->
 init() ->
     P = spawn(fun() -> receive ok -> ok end end),
     monitor(P),
-    {ok, Pid} = erlzk:connect([{"localhost", 2181}], 30000, [{chroot, "/test"},
+    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000, [{chroot, "/test"},
                                                               {monitor, P}]).
