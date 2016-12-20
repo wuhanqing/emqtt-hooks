@@ -1,6 +1,10 @@
 {application, emq_hook,
   [
    {description, "Emqttd Hook"},
+   {applications, [
+                   ekaf,
+                   eredis
+                  ]},
    {vsn, "1.5.4"},
    {env, [
 
