@@ -16,7 +16,7 @@
 
 init() ->
     application:load(ekaf),
-    application:set_env(ekaf, ekaf_bootstrap_broker, {"localhost", 9091}),
+    application:set_env(ekaf, ekaf_bootstrap_broker, {"localhost", 9092}),
     {ok, _} = application:ensure_all_started(ekaf),
     Topic = <<"ekaf">>,
     ekaf:produc_async(Topic, [<<"foo">>, {<<"key">>, <<"value">>}, <<"back_to_binary">> ]),
