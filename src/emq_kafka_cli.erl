@@ -8,7 +8,8 @@
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
--export([start_link/0, monitor/1]).
+-export([start_link/0]).
+-export([monitor/1]).
 
 %%--------------------------------------------------------------------
 %% Kafka Connect/Produce
