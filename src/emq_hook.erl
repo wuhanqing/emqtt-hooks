@@ -82,7 +82,7 @@ on_message_publish(Message = #mqtt_message{from = From, payload = Payload, times
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
     %io:format("publish from ~s | ~s, Payload is ~s, Timestamp is ~s~n", [element(1, From), element(2, From), Payload, Timestamp]),
     Topic = <<"ekaf">>,
-    ekaf:produc_async(Topic, [<<"foo">>, {<<"key">>, <<"value">>}, <<"back_to_binary">> ]),
+    ekaf:produce_async(Topic, [<<"foo">>, {<<"key">>, <<"value">>}, <<"back_to_binary">> ]),
     {ok, Message}.
 
 on_message_delivered(ClientId, Username, Message, _Env) ->
