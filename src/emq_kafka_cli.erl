@@ -1,6 +1,6 @@
 -module(emq_kafka_cli).
 
--behaviour(ecpool_worker).
+%-behaviour(ecpool_worker).
 
 -include("emq_hook.hrl").
 
