@@ -16,5 +16,6 @@ init([]) ->
     % KafkaPoolSpec = ecpool:pool_spec(?APP, ?APP, emq_kafka_cli, Kafka),
     % ClientConfig = [{reconnect_cool_down_seconds, 10}],
     % KafkaSpec = brod:start_client([{"localhost", 9092}], brod_client_1, ClientConfig),
-    Procs = [RedisPoolSpec, emq_kafka_cli:init()],
+    ZkSpec = {erlzk, {emq_kafka_cli, start_link, []}, permanent, brutal_kill, worker, [emq_kafka_cli]},
+    Procs = [RedisPoolSpec, ZkSpec],
     {ok, {{one_for_one, 10, 100}, Procs}}.
