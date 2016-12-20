@@ -7,7 +7,7 @@
 start(_Type, _Args) ->
 	{ok, Sup} = emq_hook_sup:start_link(),
   emq_hook:load(application:get_all_env()),
-  erlzk:start(),
+  %erlzk:start(),
   emq_kafka_cli:init(),
   {ok, Sup}.
 stop(_State) ->
