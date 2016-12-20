@@ -1,5 +1,7 @@
-{application, emqttd,
+{application, emq_hook,
   [
+   {description, "Emqttd Hook"},
+   {vsn, "1.5.4"},
    {env, [
 
           {ekaf,[
