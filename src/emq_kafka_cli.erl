@@ -8,7 +8,7 @@
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
--export([start_link/0]).
+-export([start/0]).
 -export([monitor/1]).
 
 %%--------------------------------------------------------------------
@@ -23,7 +23,7 @@ monitor(Pid) ->
             io:format("pid exit: ~p~n", [Msg])
     end.
 
-start_link() ->
+start() ->
     io.format("start conncet zk"),
     P = spawn(fun() -> receive ok -> ok end end),
     monitor(P),
