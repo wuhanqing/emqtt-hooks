@@ -81,7 +81,8 @@ on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env)
 on_message_publish(Message = #mqtt_message{from = From, payload = Payload, timestamp = Timestamp}, _Env) ->
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
     io:format("publish from ~s | ~s, Payload is ~s, Timestamp is ~s~n", [element(1, From), element(2, From), Payload, Timestamp]),
-    %emq_kafka_cli.produce(brod_client_1, <<"im-server">>, key, Message),
+    Topic = <<"ekaf">>,
+    ekaf:produc_async(Topic, [<<"foo">>, {<<"key">>, <<"value">>}, <<"back_to_binary">> ]),
     {ok, Message}.
 
 on_message_delivered(ClientId, Username, Message, _Env) ->

@@ -8,16 +8,13 @@
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
-%-export([produce/4]).
+-export([init/0]).
 
 %%--------------------------------------------------------------------
 %% Kafka Connect/Produce
 %%--------------------------------------------------------------------
 
-%% Redis Query.
-%-spec(produce(client(), topic(), key(), value()) -> {ok, brod_call_ref()} | {error, any()}).
-%produce(Client, Topic, Key, Value) ->
-%    PartitionFun = fun(_Topic, PartitionsCount, _Key, _Value) ->
-%                           {ok, crypto:rand_uniform(0, PartitionsCount)}
-%                   end,
-%    {ok, CallRef} = brod:produce(Client, Topic, PartitionFun, Key, Value).
+init() ->
+    application:load(ekaf),
+    application:set_env(ekaf, ekaf_bootstrap_broker, {"localhost", 9091}),
+    {ok, _} = application:ensure_all_started(ekaf).
