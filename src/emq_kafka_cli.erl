@@ -8,7 +8,7 @@
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
--export([start_link/0, add/3, monitor/1]).
+-export([start_link/0, dataW/0, childW/0, monitor/1]).
 
 %%--------------------------------------------------------------------
 %% Kafka Connect/Produce
@@ -25,18 +25,18 @@ start_link() ->
 
 subscibe_watch(Pid) ->
 
-    erlzk:get_data(Pid, "/test", spawn_link(add(Pid, node_data_changed, "/test"))),
-    erlzk:get_children(Pid, "/test", spawn_link(add(Pid, node_children_changed, "/test"))).
+    erlzk:get_data(Pid, "/test", spawn_link(dataW())),
+    erlzk:get_children(Pid, "/test", spawn_link(childW())).
 
-add(Pid, node_data_changed, Path) ->
+dataW() ->
     receive
         {Event, Path} ->
             Path = "/test",
             Event = node_data_changed,
             io:format("node data changed")
             %erlzk:get_data(Pid, "/test", spawn_link(add(Pid, node_data_changed, "/test")))
-    end;
-add(Pid, node_children_changed, Path) ->
+    end.
+childW() ->
     receive
         {Event, Path} ->
             Path = "/test",
