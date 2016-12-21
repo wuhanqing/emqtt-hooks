@@ -1,6 +1,6 @@
 -module(emq_kafka_cli).
 
--behaviour(ecpool_worker).
+%-behaviour(ecpool_worker).
 
 -include("emq_hook.hrl").
 
@@ -8,21 +8,19 @@
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
--export([connect/1, subscibe_watch/1, monitor/1]).
+-export([start_link/0, add/3, monitor/1]).
 
 %%--------------------------------------------------------------------
 %% Kafka Connect/Produce
 %%--------------------------------------------------------------------
 
-
-
-connect(Opts) ->
+start_link() ->
     io:format("start conncet zk"),
     %P = spawn(fun() -> receive ok -> ok end end),
     %monitor(P),
 
     {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
-    %subscibe_watch(Pid),
+    subscibe_watch(Pid),
     {ok, Pid}.
 
 subscibe_watch(Pid) ->
@@ -35,16 +33,16 @@ add(Pid, node_data_changed, Path) ->
         {Event, Path} ->
             Path = "/test",
             Event = node_data_changed,
-            io:format("node data changed"),
-            erlzk:get_data(Pid, "/test", spawn_link(add(Pid, node_data_changed, Path)))
+            io:format("node data changed")
+            %erlzk:get_data(Pid, "/test", spawn_link(add(Pid, node_data_changed, "/test")))
     end;
 add(Pid, node_children_changed, Path) ->
     receive
         {Event, Path} ->
             Path = "/test",
             Event = node_data_changed,
-            io:format("node child changed"),
-            erlzk:get_data(Pid, "/test", spawn_link(add(Pid, node_children_changed, Path)))
+            io:format("node child changed")
+            %erlzk:get_data(Pid, "/test", spawn_link(add(Pid, node_children_changed, "/test")))
     end.
 
 
