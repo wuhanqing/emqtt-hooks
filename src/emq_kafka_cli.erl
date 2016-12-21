@@ -19,17 +19,27 @@ start_link() ->
     %P = spawn(fun() -> receive ok -> ok end end),
     %monitor(P),
 
-    ChangeWatch = spawn_link(fun() ->
+    DataChangeWatch = spawn_link(fun() ->
+        receive
+            {Event, Path} ->
+                Path = "/test",
+                Event = node_data_changed,
+                io:format("node data changed")
+        end
+    end),
+
+    ChildrenDataChangeWatch = spawn_link(fun() ->
         receive
             {Event, Path} ->
                 Path = "/test",
                 Event = node_children_changed,
-                io:format("node changed")
+                 io:format("children changed")
         end
     end),
 
     {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
-    erlzk:get_data(Pid, "/test", ChangeWatch),
+    erlzk:get_data(Pid, "/test", DataChangeWatch),
+    erlzk:get_children(Pid, "/test", ChildrenDataChangeWatch),
     {ok, Pid}.
 
 monitor(Pid) ->
