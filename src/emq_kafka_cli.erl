@@ -18,7 +18,17 @@ start_link() ->
     io:format("start conncet zk"),
     P = spawn(fun() -> receive ok -> ok end end),
     %monitor(P),
-    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000, [{chroot, "/test"}, {monitor, P}]).
+
+    ChangeWatch = spawn(fun ->
+        receive
+            {Event, Path} ->
+                Path = "/test",
+                Event = node_children_changed,
+                io:format("node changed")
+    end)
+
+    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000, [{chroot, "/test"}, {monitor, P}]),
+    erlzk:get_data(Pid, "/test", ChangeWatch).
 
 monitor(Pid) ->
     _MonitorRef = erlang:monitor(process, Pid),
