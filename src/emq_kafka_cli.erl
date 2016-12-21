@@ -56,7 +56,17 @@ init([]) ->
     process_flag(trap_exit, true),
     io:format("start conncet zk"),
     {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
-    addWatch(node_children_changed, Pid, "/test"),
+    DataChangeWatch = spawn(fun() ->
+        receive
+            {Event, Path} ->
+            Path = "/test", 
+            Event = node_children_changed,
+            io:format("node changed")
+        end
+    end),
+    io:format("start adddddddddddiiiiiiiiiinnnnnnnnnnngggggggggggg~n"),
+    erlzk:get_children(Pid, "/test", DataChangeWatch),
+    %addWatch(node_children_changed, Pid, "/test"),
     {ok, #state{conn=Pid}}.
 
 %%--------------------------------------------------------------------
