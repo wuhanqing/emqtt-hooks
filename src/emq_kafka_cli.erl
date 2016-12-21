@@ -19,7 +19,7 @@ start_link() ->
     P = spawn(fun() -> receive ok -> ok end end),
     %monitor(P),
 
-    ChangeWatch = spawn(fun ->
+    ChangeWatch = spawn(fun() ->
         receive
             {Event, Path} ->
                 Path = "/test",
