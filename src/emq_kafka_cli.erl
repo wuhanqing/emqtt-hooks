@@ -21,7 +21,7 @@
 
 -record(state, {conn}).
 
-addWatch(Path) -> gen_server:call(?MODULE, {node_data_changed, Path}).
+addWatch(Path) -> gen_server:call(?MODULE, {node_children_changed, Path}).
 
 %%%===================================================================
 %%% API
@@ -56,7 +56,7 @@ init([]) ->
     process_flag(trap_exit, true),
     io:format("start conncet zk"),
     {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
-    addWatch(node_data_changed, Pid, "/test"),
+    addWatch(node_children_changed, Pid, "/test"),
     {ok, #state{conn=Pid}}.
 
 %%--------------------------------------------------------------------
@@ -134,15 +134,15 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
-addWatch(node_data_changed, Conn, Path) ->
+addWatch(node_children_changed, Conn, Path) ->
     DataChangeWatch = spawn(fun() ->
         receive
             {Event, Path} ->
             Path = "/test", 
-            Event = node_data_changed,
+            Event = node_children_changed,
             erlzk:create(Conn, "/test1/added"),
             io:format("node changed")
         end
     end),
     io:format("start adddddddddddiiiiiiiiiinnnnnnnnnnngggggggggggg~n"),
-    erlzk:get_data(Conn, Path, DataChangeWatch).
+    erlzk:get_children(Conn, Path, DataChangeWatch).
