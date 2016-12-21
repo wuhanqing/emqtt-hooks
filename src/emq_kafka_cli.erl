@@ -75,7 +75,7 @@ init([]) ->
 %%--------------------------------------------------------------------
 handle_call({node_data_changed, Path}, _From, #state{conn=Conn}=State) ->
     io:format("start addddddddddd watchhhhhhhhhhhhhh~n"),
-    erlzk:create(Conn, "/test1"),
+    %erlzk:create(Conn, "/test1"),
     Reply = addWatch(node_data_changed, Conn, Path),
     io:format("Replyyyyyyyyyyyyyyy isssssssssssss ~s~n", [Reply]),
     {reply, Reply, State}.
@@ -140,7 +140,9 @@ addWatch(node_data_changed, Conn, Path) ->
             {Event, Path} ->
             Path = "/test",
             Event = node_data_changed,
+            erlzk:create(Conn, "/test1/added"),
             io:format("node changed")
         end
     end),
+    io:format("start adddddddddddiiiiiiiiiinnnnnnnnnnngggggggggggg~n"),
     erlzk:get_data(Conn, Path, DataChangeWatch).
