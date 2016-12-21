@@ -25,6 +25,7 @@ start_link() ->
                 Path = "/test",
                 Event = node_children_changed,
                 io:format("node changed")
+        end
     end),
 
     {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000, [{chroot, "/test"}, {monitor, P}]),
