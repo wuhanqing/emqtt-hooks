@@ -75,6 +75,7 @@ init([]) ->
 %%--------------------------------------------------------------------
 handle_call({node_data_changed, Path}, _From, #state{conn=Conn}=State) ->
     io:format("start addddddddddd watchhhhhhhhhhhhhh~n"),
+    erlzk:create(Conn, "/test1"),
     Reply = addWatch(node_data_changed, Conn, Path),
     io:format("Replyyyyyyyyyyyyyyy isssssssssssss ~s~n", [Reply]),
     {reply, Reply, State}.
