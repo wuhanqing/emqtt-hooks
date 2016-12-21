@@ -28,8 +28,8 @@ start_link() ->
         end
     end),
 
-    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
-    erlzk:get_data(Pid, "/test", ChangeWatch).
+    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000).
+    %erlzk:get_data(Pid, "/test", ChangeWatch).
 
 monitor(Pid) ->
     _MonitorRef = erlang:monitor(process, Pid),
