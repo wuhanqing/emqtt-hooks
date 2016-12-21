@@ -74,6 +74,7 @@ init([]) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_call({node_data_changed, Path}, _From, #state{conn=Conn}=State) ->
+    io:format("start addddddddddd watchhhhhhhhhhhhhh"),
     Reply = addWatch(node_data_changed, Conn, Path),
     {reply, Reply, State}.
 
