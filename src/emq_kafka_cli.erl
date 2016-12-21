@@ -19,7 +19,7 @@ start_link() ->
     %P = spawn(fun() -> receive ok -> ok end end),
     %monitor(P),
 
-    ChangeWatch = spawn(fun() ->
+    ChangeWatch = spawn_link(fun() ->
         receive
             {Event, Path} ->
                 Path = "/test",
@@ -28,8 +28,9 @@ start_link() ->
         end
     end),
 
-    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000).
-    %erlzk:get_data(Pid, "/test", ChangeWatch).
+    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
+    erlzk:get_data(Pid, "/test", ChangeWatch),
+    {ok, Pid}.
 
 monitor(Pid) ->
     _MonitorRef = erlang:monitor(process, Pid),
