@@ -16,7 +16,7 @@
 
 start_link() ->
     io:format("start conncet zk"),
-    P = spawn(fun() -> receive ok -> ok end end),
+    %P = spawn(fun() -> receive ok -> ok end end),
     %monitor(P),
 
     ChangeWatch = spawn(fun() ->
@@ -28,7 +28,7 @@ start_link() ->
         end
     end),
 
-    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000, [{chroot, "/test"}, {monitor, P}]),
+    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
     erlzk:get_data(Pid, "/test", ChangeWatch).
 
 monitor(Pid) ->
