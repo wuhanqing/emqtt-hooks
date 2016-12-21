@@ -54,7 +54,7 @@ init([]) ->
     process_flag(trap_exit, true),
     io:format("start conncet zk"),
     {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
-    addWatch(node_data_changed, Pid, "test"),
+    %addWatch(node_data_changed, Pid, "test"),
     {ok, #state{conn=Pid}}.
 
 %%--------------------------------------------------------------------
