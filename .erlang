@@ -1,0 +1,6 @@
+application:start(eredis).
+application:start(crypto).
+application:start(erlzk).
+application:start(gproc).
+application:start(ecpool).
+application:start(emq_hook).

@@ -6,7 +6,7 @@
 %%% @end
 %%% Created : 21 Dec 2016 by 吴汗青 <wuhanqing@wuhanqingdeMacBook-Pro.local>
 %%%-------------------------------------------------------------------
--module(emq_kafka_cli).
+-module(emq_zk_cli).
 
 -behaviour(gen_server).
 
@@ -15,13 +15,14 @@
 
 %% gen_server callbacks
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
-         terminate/2, code_change/3, addWatch/1]).
+         terminate/2, code_change/3, getNodes/1]).
 
 -define(SERVER, ?MODULE).
 
--record(state, {conn}).
+-record(state, {conn,
+               worker = []}).
 
-addWatch(Path) -> gen_server:call(?MODULE, {node_children_changed, Path}).
+getNodes(htcf) -> gen_server:call(?MODULE, worker).
 
 %%%===================================================================
 %%% API
@@ -56,18 +57,9 @@ init([]) ->
     process_flag(trap_exit, true),
     io:format("start conncet zk"),
     {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
-    DataChangeWatch = spawn(fun() ->
-        receive
-            {Event, Path} ->
-            Path = "/test", 
-            Event = node_children_changed,
-            io:format("node changed")
-        end
-    end),
-    io:format("start adddddddddddiiiiiiiiiinnnnnnnnnnngggggggggggg~n"),
-    erlzk:get_children(Pid, "/test", DataChangeWatch),
-    %addWatch(node_children_changed, Pid, "/test"),
-    {ok, #state{conn=Pid}}.
+    io:format("Pid: ~p~n", [Pid]),
+    {ok, Children} = getChildren(node_children_changed, Pid),
+    {ok, #state{conn = Pid, worker = Children}}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -83,22 +75,23 @@ init([]) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_call({node_data_changed, Path}, _From, #state{conn=Conn}=State) ->
-    io:format("start addddddddddd watchhhhhhhhhhhhhh~n"),
-    %erlzk:create(Conn, "/test1"),
-    Reply = addWatch(node_data_changed, Conn, Path),
-    io:format("Replyyyyyyyyyyyyyyy isssssssssssss~n"),
-    {reply, Reply, State}.
+handle_call({node_children_changed, htcf}, _From, #state{conn=Conn}=State) ->
+    {ok, Children} = getChildren(node_children_changed, Conn),
+    Reply = {ok, Children},
+    NewState = State#state{worker=Children},
+    {reply, Reply, NewState};
+
+handle_call(worker, _From, #state{worker=Worker}=State) -> {reply, Worker, State}. 
 
 %%--------------------------------------------------------------------
 %% @private
 %% @doc
 %% Handling cast messages
 %%
-%% @spec handle_cast(Msg, State) -> {noreply, State} |
+%% @spec handle_cast(Msg, State) -> {noreply, State} 
 %%                                  {noreply, State, Timeout} |
 %%                                  {stop, Reason, State}
-%% @end
+%% @endemq
 %%--------------------------------------------------------------------
 handle_cast(_Msg, State) ->
     {noreply, State}.
@@ -144,15 +137,15 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
-addWatch(node_children_changed, Conn, Path) ->
+getChildren(node_children_changed, Conn) ->
     DataChangeWatch = spawn(fun() ->
         receive
-            {Event, Path} ->
-            Path = "/test", 
-            Event = node_children_changed,
-            erlzk:create(Conn, "/test1/added"),
-            io:format("node changed")
+            {Event, <<"/htcf">>} ->
+            gen_server:call(?MODULE, {node_children_changed, htcf}),
+            io:format("node changed ~s ~n", [Event])
         end
     end),
-    io:format("start adddddddddddiiiiiiiiiinnnnnnnnnnngggggggggggg~n"),
-    erlzk:get_children(Conn, Path, DataChangeWatch).
+    io:format("watcher: ~p~n", [DataChangeWatch]),
+    {ok, Children} = erlzk:get_children(Conn, "/htcf", DataChangeWatch),
+    io:format("children : ~s~n", [Children]),
+    {ok, Children}.
