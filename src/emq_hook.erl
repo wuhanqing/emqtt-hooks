@@ -83,9 +83,9 @@ on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
     %io:format("publish from ~s | ~s, Payload is ~s, Timestamp is ~s~n", [element(1, From), element(2, From), Payload, Timestamp]),
     Workers = emq_zk_cli:getNodes(htcf),
-    Index = random:uniform(length(Workers)),
     if
-        Index > 0 ->
+        length(Workers) > 0 ->
+            Index = random:uniform(length(Workers)),
             Worker = lists:nth(Index, Workers),
             %WorkerTopic = string:concat("htcf/", Worker),
             WorkerTopic = string:concat("htcf/", "1"),
