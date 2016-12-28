@@ -79,22 +79,16 @@ on_session_terminated(ClientId, Username, Reason, _Env) ->
 on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     {ok, Message};
 
-on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic = Topic, timestamp = Timestamp}, _Env) ->
+on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic = <<"htcf/", _/binary>>, timestamp = Timestamp}, _Env) ->
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
     %io:format("publish from ~s | ~s, Payload is ~s, Timestamp is ~s~n", [element(1, From), element(2, From), Payload, Timestamp]),
-    Htcp = string:str(Topic, "htcf"),
-    if
-        Htcp > 0 ->
-            Workers = emq_zk_cli:getNodes(htcf),
-            Index = random:uniform(length(Workers)),
-            Worker = lists:nth(Index, Workers),
-            %WorkerTopic = string:concat("htcf/", Worker),
-            WorkerTopic = string:concat("htcf/", "1"),
-            NewMessage = Message#mqtt_message{topic=WorkerTopic},
-            emqttd:publish(NewMessage);
-        true ->
-            io:format("publis")
-    end,
+    Workers = emq_zk_cli:getNodes(htcf),
+    Index = random:uniform(length(Workers)),
+    Worker = lists:nth(Index, Workers),
+    %WorkerTopic = string:concat("htcf/", Worker),
+    WorkerTopic = string:concat("htcf/", "1"),
+    NewMessage = Message#mqtt_message{topic=WorkerTopic},
+    emqttd:publish(NewMessage),
     {ok, Message}.
 
 on_message_delivered(ClientId, Username, Message, _Env) ->
