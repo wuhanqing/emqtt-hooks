@@ -94,6 +94,10 @@ on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic
         true ->
             io:format("dont match (just publish)")
     end,
+    {ok, Message};
+
+on_message_publish(Message, _Env) ->
+    io:format("publish ~s~n", [emqttd_message:format(Message)]),
     {ok, Message}.
 
 on_message_delivered(ClientId, Username, Message, _Env) ->
