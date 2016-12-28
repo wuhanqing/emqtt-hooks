@@ -86,9 +86,8 @@ on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic
         length(Workers) > 0 ->
             Index = random:uniform(length(Workers)),
             Worker = lists:nth(Index, Workers),
-            %WorkerTopic = string:concat("htcf/", Worker),
-            A = string:concat("htcf/", "1"),
-            WorkerTopic = <<A>>,
+            StrTopic = string:concat("htcf/im/worker/", Worker),
+            WorkerTopic = list_to_binary(StrTopic),
             NewMessage = Message#mqtt_message{topic=WorkerTopic},
             emqttd:publish(NewMessage);
         true ->

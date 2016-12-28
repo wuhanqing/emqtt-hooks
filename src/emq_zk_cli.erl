@@ -58,7 +58,8 @@ init([]) ->
     io:format("start conncet zk"),
     {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
     io:format("Pid: ~p~n", [Pid]),
-    {ok, Children} = getChildren(node_children_changed, Pid),
+    Path = list_to_binary("/htcf/im/worker"),
+    {ok, Children} = getChildren(node_children_changed, Path, Pid),
     {ok, #state{conn = Pid, worker = Children}}.
 
 %%--------------------------------------------------------------------
@@ -75,8 +76,8 @@ init([]) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_call({node_children_changed, htcf}, _From, #state{conn=Conn}=State) ->
-    {ok, Children} = getChildren(node_children_changed, Conn),
+handle_call({node_children_changed, htcf, Path}, _From, #state{conn=Conn}=State) ->
+    {ok, Children} = getChildren(node_children_changed, Path, Conn),
     Reply = {ok, Children},
     NewState = State#state{worker=Children},
     {reply, Reply, NewState};
@@ -137,15 +138,15 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
-getChildren(node_children_changed, Conn) ->
+getChildren(node_children_changed, Path, Conn) ->
     DataChangeWatch = spawn(fun() ->
         receive
-            {Event, <<"/htcf">>} ->
-            gen_server:call(?MODULE, {node_children_changed, htcf}),
+            {Event, Path} ->
+            gen_server:call(?MODULE, {node_children_changed, htcf, Path}),
             io:format("node changed ~s ~n", [Event])
         end
     end),
     io:format("watcher: ~p~n", [DataChangeWatch]),
-    {ok, Children} = erlzk:get_children(Conn, "/htcf", DataChangeWatch),
+    {ok, Children} = erlzk:get_children(Conn, Path, DataChangeWatch),
     io:format("children : ~s~n", [Children]),
     {ok, Children}.
