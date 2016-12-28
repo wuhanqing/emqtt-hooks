@@ -79,7 +79,7 @@ on_session_terminated(ClientId, Username, Reason, _Env) ->
 on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env) ->
     {ok, Message};
 
-on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic = <<"htcf/im/", _/binary>>, timestamp = Timestamp}, _Env) ->
+on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic = <<"htcf/im">>, timestamp = Timestamp}, _Env) ->
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
     Workers = emq_zk_cli:getNodes(htcf),
     if
