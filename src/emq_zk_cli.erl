@@ -56,7 +56,7 @@ start_link() ->
 init([]) ->
     process_flag(trap_exit, true),
     io:format("start conncet zk"),
-    {ok, Pid} = erlzk:connect([{"172.16.129.226", 2181}], 30000),
+    {ok, Pid} = erlzk:connect([{"127.0.0.1", 2181}], 30000),
     io:format("Pid: ~p~n", [Pid]),
     Path = list_to_binary("/htcf/im/worker"),
     {ok, Children} = getChildren(node_children_changed, Path, Pid),
