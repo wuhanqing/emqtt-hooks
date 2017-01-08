@@ -8,7 +8,7 @@
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
--export([connect/1, set/2, get/1]).
+-export([connect/1, set/2, get/1, smembers/1, srem/2]).
 
 %%--------------------------------------------------------------------
 %% Redis Connect/Query
@@ -29,3 +29,11 @@ set(Key, Value) ->
 -spec(get(string()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
 get(Key) ->
     ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["GET", Key]) end).
+
+-spec(smembers(string()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
+smembers(Key) ->
+    ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["SMEMBERS", Key]) end).
+
+-spec(srem(string(), string()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
+srem(Key, Value) ->
+    ecpool:with_client(?APP, fun(C) -> eredis:q(C, {"SREM", Key, Value})).
