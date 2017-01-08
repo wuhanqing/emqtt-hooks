@@ -52,6 +52,7 @@ on_client_connected(ConnAck, Client = #mqtt_client{client_id = ClientId}, _Env) 
 
 on_client_disconnected(Reason, _Client = #mqtt_client{client_id = ClientId, username = Username}, _Env) ->
     io:format("client ~s disconnected, reason: ~w~n", [ClientId, Reason]),
+    io:format("Username ~s", [Username]),
     Uid = emq_redis_cli:get(Username),
     io:format("Uid ~s", [Uid]),
     ok.
