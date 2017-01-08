@@ -36,4 +36,4 @@ smembers(Key) ->
 
 -spec(srem(string(), string()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
 srem(Key, Value) ->
-    ecpool:with_client(?APP, fun(C) -> eredis:q(C, {"SREM", Key, Value}) end).
+    ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["SREM", Key, Value]) end).
