@@ -89,7 +89,7 @@ on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic
         length(Workers) > 0 ->
             Index = random:uniform(length(Workers)),
             Worker = lists:nth(Index, Workers),
-            emq_redis_cli:rpush(Payload),
+            emq_redis_cli:rpush(list_to_binary("im"), Payload),
             StrTopic = string:concat("im/worker/", Worker),
             WorkerTopic = list_to_binary(StrTopic),
             NewMessage = Message#mqtt_message{topic=WorkerTopic},
