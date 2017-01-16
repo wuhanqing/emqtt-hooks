@@ -58,7 +58,7 @@ init([]) ->
     io:format("start conncet zk~n"),
     {ok, Pid} = erlzk:connect([{"127.0.0.1", 2181}], 30000),
     io:format("Pid: ~p~n", [Pid]),
-    Path = list_to_binary("/htcf/im/worker"),
+    Path = list_to_binary("/htcf/im/queue"),
     {ok, Children} = getChildren(node_children_changed, Path, Pid),
     {ok, #state{conn = Pid, worker = Children}}.
 
