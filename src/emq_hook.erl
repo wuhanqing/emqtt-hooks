@@ -84,12 +84,12 @@ on_message_publish(Message = #mqtt_message{topic = <<"$SYS/", _/binary>>}, _Env)
 
 on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic = <<"htcf/im">>, timestamp = Timestamp}, _Env) ->
     io:format("publish ~s~n", [emqttd_message:format(Message)]),
+    emq_redis_cli:rpush(list_to_binary("im"), Payload),
     Workers = emq_zk_cli:getNodes(htcf),
     if
         length(Workers) > 0 ->
             Index = random:uniform(length(Workers)),
             Worker = lists:nth(Index, Workers),
-            emq_redis_cli:rpush(list_to_binary("im"), Payload),
             StrTopic = string:concat("im/worker/", Worker),
             WorkerTopic = list_to_binary(StrTopic),
             NewMessage = Message#mqtt_message{topic=WorkerTopic},
