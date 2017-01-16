@@ -8,7 +8,7 @@
 
 -define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
 
--export([connect/1, set/2, get/1, smembers/1, srem/2]).
+-export([connect/1, set/2, get/1, smembers/1, srem/2, rpush/2]).
 
 %%--------------------------------------------------------------------
 %% Redis Connect/Query
@@ -37,3 +37,7 @@ smembers(Key) ->
 -spec(srem(string(), string()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
 srem(Key, Value) ->
     ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["SREM", Key, Value]) end).
+
+-spec(rpush(binary(), binary()) -> {ok, undefined | binary() | list()} | {error, atom() | binary()}).
+rpush(Key, Value) ->
+    ecpool:with_client(?APP, fun(C) -> eredis:q(C, ["RPUSH", Key, Value]) end).
