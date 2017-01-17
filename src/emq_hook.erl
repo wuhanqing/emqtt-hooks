@@ -88,6 +88,8 @@ on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic
     Length = length(Workers),
     if
         Length > 0 ->
+            Index = rand:uniform(length(Workers)),
+            Worker = lists:nth(Index, Workers),
             emq_redis_cli:rpush(list_to_binary(Worker), Payload);
         Length == 0 ->
             emq_redis_cli:rpush(list_to_binary("im"), Payload)
