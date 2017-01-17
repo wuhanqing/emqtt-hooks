@@ -17,6 +17,8 @@
 -export([init/1, handle_call/3, handle_cast/2, handle_info/2,
          terminate/2, code_change/3, getNodes/1]).
 
+-define(ENV(Key, Opts), proplists:get_value(Key, Opts)).
+
 -define(SERVER, ?MODULE).
 
 -record(state, {conn,
@@ -53,12 +55,15 @@ start_link() ->
 %%                     {stop, Reason}
 %% @end
 %%--------------------------------------------------------------------
-init([]) ->
+init([Opts]) ->
     process_flag(trap_exit, true),
-    io:format("start conncet zk~n"),
-    {ok, Pid} = erlzk:connect([{"127.0.0.1", 2181}], 30000),
-    io:format("Pid: ~p~n", [Pid]),
-    Path = list_to_binary("/htcf/im/queue"),
+    HOST = ?ENV(host, Opts),
+    PORT = ?ENV(port, Opts),
+    IM_PATH = ?ENV(im_path, Opts),
+    io:format("start conncet zk ~s:~w~n", [HOST, PORT]),
+    io:format("im_path::~s~n", [IM_PATH]),
+    {ok, Pid} = erlzk:connect([{HOST, PORT}], 30000),
+    Path = list_to_binary(IM_PATH),
     {ok, Children} = getChildren(node_children_changed, Path, Pid),
     {ok, #state{conn = Pid, worker = Children}}.
 

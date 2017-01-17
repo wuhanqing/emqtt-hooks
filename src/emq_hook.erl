@@ -90,6 +90,7 @@ on_message_publish(Message = #mqtt_message{from = From, payload = Payload, topic
         Length > 0 ->
             Index = rand:uniform(length(Workers)),
             Worker = lists:nth(Index, Workers),
+            io:format("rpush to queue :: ~s~n", Worker),
             emq_redis_cli:rpush(list_to_binary(Worker), Payload);
         Length == 0 ->
             emq_redis_cli:rpush(list_to_binary("im"), Payload)

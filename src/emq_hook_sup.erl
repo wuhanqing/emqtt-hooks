@@ -11,7 +11,8 @@ start_link() ->
 
 init([]) ->
     {ok, Redis} = application:get_env(?APP, redis),
+    {ok, Zookeeper} = application:get_env(?APP, zookeeper),
     RedisPoolSpec = ecpool:pool_spec(?APP, ?APP, emq_redis_cli, Redis),
-    ZkSpec = {erlzk, {emq_zk_cli, start_link, []}, permanent, brutal_kill, worker, [emq_kafka_cli]},
+    ZkSpec = {erlzk, {emq_zk_cli, start_link, [Zookeeper]}, permanent, brutal_kill, worker, [emq_zk_cli]},
     Procs = [RedisPoolSpec, ZkSpec],
     {ok, {{one_for_one, 1, 10}, Procs}}.

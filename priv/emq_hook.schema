@@ -41,3 +41,30 @@
    {password, Passwd}]
 end}.
 
+%% Zookeeper Config
+
+{mapping, "zookeeper.server", "emq_hook.zookeeper", [
+  {default, {"127.0.0.1", 2181}},
+  {datatype, [integer, ip, string]}
+]}.
+
+{mapping, "zookeeper.im_path", "emq_hook.zookeeper", [
+   {default, "/htcf/im/queue"},
+   {datatype, string}
+]}.
+
+{translation, "emq_hook.zookeeper", fun(Conf) ->
+  {ZHost, ZPort} =
+  case cuttlefish:conf_get("zookeeper.server", Conf) of
+    {Ip, Port} -> {Ip, Port};
+    S          -> case string:tokens(S, ":") of
+                    [Domain]       -> {Domain, 6379};
+                    [Domain, Port] -> {Domain, list_to_integer(Port)}
+                  end
+    end,
+  IM_PATH = cuttlefish:conf_get("zookeeper.im_path", Conf),
+  [{host, ZHost},
+   {port, ZPort},
+   {im_path, IM_PATH}]
+end}.
+
